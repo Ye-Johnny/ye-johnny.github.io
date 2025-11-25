@@ -7,6 +7,7 @@
 <body>
   <div id="pdf-container"></div>
    <script>
+      // 初始化Three.js场景
         // 替换为你的PDF文件路径
         const pdfUrl = 'assets/portfolio-v1.pdf';
         pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
