@@ -23,7 +23,7 @@
       requestAnimationFrame(animate);
       // 如果有平面对象，则让它旋转
       if (window.plane) {
-            window.plane.rotation.y += 0.005;
+            window.plane.rotation.y += 0.01;
          }
       renderer.render(scene, camera);
     }
@@ -55,7 +55,7 @@
               reader.onload = function() {
                 const typedarray = new Uint8Array(reader.result);
                 pdfjsLib.getDocument(typedarray).promise.then(pdf => {
-                  pdf.getPage(1).then(page => {
+                  pdf.getPage(2).then(page => {
                     const viewport = page.getViewport({ scale: 1.5 });
                     const canvas = document.createElement('canvas');
                     const context = canvas.getContext('2d');
