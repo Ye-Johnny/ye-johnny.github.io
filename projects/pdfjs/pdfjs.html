@@ -6,15 +6,28 @@
 </head>
 <body>
   <div id="pdf-container"></div>
-  <script>
-    // 替换为你的PDF文件路径
-    const pdfUrl = 'assets/portfolio-v1.pdf';
-    pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
-      const page = pdf.getPage(1); // 显示第一页
-      page.render({ canvas: document.createElement('canvas') }).then(canvas => {
-        document.getElementById('pdf-container').appendChild(canvas);
-      });
-    });
-  </script>
+   <script>
+        // 替换为你的PDF文件路径
+        const pdfUrl = 'assets/portfolio-v1.pdf';
+        pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
+          pdf.getPage(1).then(page => { // 显示第一页
+            const viewport = page.getViewport({ scale: 1.0 });
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+          const renderContext = {
+              canvasContext: context,
+              viewport: viewport
+            };
+            page.render(renderContext).promise.then(() => {
+              document.getElementById('pdf-container').appendChild(canvas);
+            });
+          });
+        }).catch(error => {
+          console.error('Error loading PDF:', error);
+          document.getElementById('pdf-container').innerHTML = '<p>Error loading PDF. Check console for details.</p>';
+        });
+    </script>
 </body>
 </html>
