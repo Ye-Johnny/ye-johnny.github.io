@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>我的作品集 PDF js+Three</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+</head>
+<body>
+  <div id="pdf-container"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+<script>
+  const pdfUrl = 'assets/portfolio-v1.pdf';
+  pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
+    pdf.getPage(1).then(page => {
+      const viewport = page.getViewport({ scale: 1.5 });
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+      page.render({ canvasContext: context, viewport: viewport }).then(() => {
+        document.getElementById('pdf-container').appendChild(canvas);
+      });
+    });
+  });
+
+
+  // 将PDF画布转换为Three.js材质
+  const pdfCanvas = document.querySelector('#pdf-container canvas');
+  const texture = new THREE.CanvasTexture(pdfCanvas);
+  const material = new THREE.MeshBasicMaterial({ map: texture });
+  const plane = new THREE.Mesh(new THREE.PlaneGeometry(2, 3), material);
+  scene.add(plane);
+
+  // 添加3D旋转效果
+  function animate() {
+    requestAnimationFrame(animate);
+    plane.rotation.y += 0.005;
+    renderer.render(scene, camera);
+  }
+  animate();
+</script>
+
+
+</body>
+</html>

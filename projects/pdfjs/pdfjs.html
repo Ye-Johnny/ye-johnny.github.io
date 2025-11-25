@@ -8,7 +8,7 @@
   <div id="pdf-container"></div>
   <script>
     // 替换为你的PDF文件路径
-    const pdfUrl = 'assets/portfolio-1.pdf';
+    const pdfUrl = 'assets/portfolio-v1.pdf';
     pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
       const page = pdf.getPage(1); // 显示第一页
       page.render({ canvas: document.createElement('canvas') }).then(canvas => {

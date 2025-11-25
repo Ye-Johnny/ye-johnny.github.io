@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>我的作品集 PDF png+Three</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+</head>
+<body>
+  <div id="pdf-container"></div>
+  <script>
+    // 初始化Three.js场景
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // 加载PDF转成的图片（替换为你的图片路径）
+    const texture = new THREE.TextureLoader().load('assets/portfolio-v1_01.png');
+    const material = new THREE.MeshBasicMaterial({ map: texture });
+    const plane = new THREE.Mesh(new THREE.PlaneGeometry(2, 3), material);
+    scene.add(plane);
+
+    camera.position.z = 5;
+
+    // 添加交互：让画作旋转
+    function animate() {
+      requestAnimationFrame(animate);
+      plane.rotation.y += 0.01; // 水平旋转
+      renderer.render(scene, camera);
+    }
+    animate();
+
+
+    // 添加点击交互：点击图片放大
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+window.addEventListener('click', (event) => {
+  // 计算鼠标位置
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    
+    // 检测点击了什么
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects([plane]);
+    
+    if (intersects.length > 0) {
+      // 点击后放大
+      plane.scale.set(1.5, 1.5, 1.5);
+      // 添加动画效果
+      gsap.to(plane.scale, { x: 1, y: 1, z: 1, duration: 0.5 });
+    }
+  });
+
+  // 添加"状态可视化"：鼠标悬停时显示标题
+  plane.addEventListener('mouseover', () => {
+    document.body.style.cursor = 'pointer';
+    // 添加标题提示
+    const title = document.createElement('div');
+    title.textContent = '设计作品：x';
+    title.style.position = 'absolute';
+    title.style.top = '10px';
+    title.style.left = '50%';
+    title.style.transform = 'translateX(-50%)';
+    title.style.color = '#fff';
+    title.style.fontSize = '24px';
+    document.body.appendChild(title);
+  });
+
+  plane.addEventListener('mouseout', () => {
+    document.body.style.cursor = 'default';
+    // 移除标题
+    const title = document.querySelector('div[style*="position: absolute"]');
+    if (title) document.body.removeChild(title);
+  });
+  </script>
+</body>
+</html>
